@@ -1,11 +1,19 @@
-console.log("Hi there");
+import { GameEngine } from './conway/GameEngine.js';
 
-
-const a: number = 1;
-
-interface HeyThere {
-    Hey: string;
-    There: string;
-}
-
-console.log("Neat, typescript works");
+const game = new GameEngine(3, 3);
+game.primaryGrid[0][1] = true;
+game.primaryGrid[1][1] = true;
+game.primaryGrid[2][1] = true;
+game.show();
+game.iteration();
+console.log('\n\n');
+game.show();
+game.iteration();
+console.log('\n\n');
+game.show();
+game.iteration();
+console.log('\n\n');
+game.show();
+game.iteration();
+console.log('\n\n');
+game.show();

@@ -1,0 +1,13 @@
+{
+    "name": "conway-web",
+    "version": "1.0.0",
+    "description": "Web based implementation of Conway's Game of Life because I'm a huge fan of this game",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KeatonMueller/conway-web.git"
+    },
+    "devDependencies": {
+        "prettier": "^3.0.3",
+        "typescript": "^5.2.2"
+    }
+}
