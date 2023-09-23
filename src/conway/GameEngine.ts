@@ -37,7 +37,7 @@ export class GameEngine {
     }
 
     toggle(row: number, col: number) {
-        if (row < 0 || row > this.gridHeight || col < 0 || col > this.gridHeight) {
+        if (row < 0 || row > this.gridHeight || col < 0 || col > this.gridWidth) {
             return;
         }
         const newValue = !this.#grids[this.#gridIdx][row][col];
