@@ -9,26 +9,26 @@ export class GameEngine {
     #grids!: Grid[];
     // indicates which of the grids is active on screen
     #gridIdx!: number;
-    #gameRules: GameRules;
-    // game engine needs direct access to the canvas so it can render
-    // the squares as it calculates their state
+    // game engine needs direct access to the canvas so it can render the squares as it calculates their state
     #canvas: HTMLCanvasElement;
     #ctx: CanvasRenderingContext2D;
     #pixelSize: number;
-    gridWidth: number;
-    gridHeight: number;
+    #gameRules: GameRules;
+    gridWidth!: number;
+    gridHeight!: number;
 
     constructor(canvas: HTMLCanvasElement, pixelSize: number, gameRules?: GameRules) {
         this.#canvas = canvas;
         this.#ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-        this.#gameRules = gameRules || new RectangularGameRules();
         this.#pixelSize = pixelSize;
-        this.gridWidth = Math.floor(this.#canvas.width / pixelSize);
-        this.gridHeight = Math.floor(this.#canvas.height / pixelSize);
+        this.#gameRules = gameRules || new RectangularGameRules();
         this.resetGame();
     }
 
     resetGame() {
+        this.gridWidth = Math.floor(this.#canvas.width / this.#pixelSize);
+        this.gridHeight = Math.floor(this.#canvas.height / this.#pixelSize);
+
         this.#gridIdx = 0;
         this.#grids = [
             new Array(this.gridHeight).fill(0).map(() => new Array(this.gridWidth).fill(false)),
@@ -36,12 +36,14 @@ export class GameEngine {
         ];
     }
 
-    setValue(row: number, col: number, value: boolean) {
-        if (this.#grids[this.#gridIdx][row][col] != value) {
-            this.#grids[this.#gridIdx][row][col] = value;
-            this.#ctx.fillStyle = value ? 'white' : 'black';
-            this.#ctx.fillRect(col * this.#pixelSize, row * this.#pixelSize, this.#pixelSize, this.#pixelSize);
+    toggle(row: number, col: number) {
+        if (row < 0 || row > this.gridHeight || col < 0 || col > this.gridHeight) {
+            return;
         }
+        const newValue = !this.#grids[this.#gridIdx][row][col];
+        this.#grids[this.#gridIdx][row][col] = newValue;
+        this.#ctx.fillStyle = newValue ? 'white' : 'black';
+        this.#ctx.fillRect(col * this.#pixelSize, row * this.#pixelSize, this.#pixelSize, this.#pixelSize);
     }
 
     iteration() {
