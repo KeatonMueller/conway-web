@@ -1,6 +1,7 @@
 import { GameRules } from './GameRules.js';
 
 export class RectangularGameRules implements GameRules {
+    // default to standard Conway rules
     neighborMin: number = 2;
     neighborMax: number = 3;
     reproductionMin: number = 3;
@@ -12,7 +13,7 @@ export class RectangularGameRules implements GameRules {
         [ 1, -1], [ 1, 0], [ 1, 1]
     ];
 
-    getNeighbors(grid: boolean[][], row: number, col: number): number {
+    #getNumNeighbors(grid: boolean[][], row: number, col: number): number {
         let numNeighbors = 0;
         for (const neighborCoord of this.neighborCoords) {
             const nextRow = row + neighborCoord[0];
@@ -26,7 +27,7 @@ export class RectangularGameRules implements GameRules {
     }
 
     getNextState(grid: boolean[][], row: number, col: number): boolean {
-        const numNeighbors = this.getNeighbors(grid, row, col);
+        const numNeighbors = this.#getNumNeighbors(grid, row, col);
 
         if (grid[row][col]) {
             return this.neighborMin <= numNeighbors && numNeighbors <= this.neighborMax;
