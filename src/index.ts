@@ -1,7 +1,7 @@
 import { GameManager } from './conway/GameManager.js';
 import { GameEngine } from './conway/engine/GameEngine.js';
 
-const PIXEL_SIZE = 100;
+const CELL_SIZE = 100;
 
 let canvas: HTMLCanvasElement;
 let gameManager: GameManager;
@@ -9,7 +9,7 @@ let gameEngine: GameEngine;
 
 window.onload = () => {
     canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    gameManager = new GameManager(canvas, PIXEL_SIZE);
+    gameManager = new GameManager(canvas, CELL_SIZE);
     gameEngine = gameManager.getGameEngine();
     initGame();
 };

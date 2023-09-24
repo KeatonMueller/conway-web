@@ -9,12 +9,12 @@ import { RectangularGameEngine } from './engine/RectangularGameEngine.js';
  */
 export class GameManager {
     private canvas: HTMLCanvasElement;
-    private pixelSize: number;
+    private cellSize: number;
     private gameEngine: GameEngine | null;
 
-    public constructor(canvas: HTMLCanvasElement, pixelSize: number) {
+    public constructor(canvas: HTMLCanvasElement, cellSize: number) {
         this.canvas = canvas;
-        this.pixelSize = pixelSize;
+        this.cellSize = cellSize;
         this.gameEngine = null;
     }
 
@@ -30,7 +30,7 @@ export class GameManager {
         switch (nextGameType) {
             case GameType.RECTANGULAR:
             default:
-                this.gameEngine = new RectangularGameEngine(nextGameType, this.canvas, this.pixelSize);
+                this.gameEngine = new RectangularGameEngine(nextGameType, this.canvas, this.cellSize);
         }
 
         return this.gameEngine!;

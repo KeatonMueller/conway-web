@@ -88,11 +88,11 @@ export abstract class GameEngine {
      */
     protected abstract getCoordinate(x: number, y: number): Coordinate;
 
-    public constructor(type: GameType, canvas: HTMLCanvasElement, pixelSize: number) {
+    public constructor(type: GameType, canvas: HTMLCanvasElement, cellSize: number) {
         this.type = type;
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-        this.cellSize = pixelSize;
+        this.cellSize = cellSize;
         this.resetGame();
 
         const canvasLeft = canvas.offsetLeft + canvas.clientLeft;
