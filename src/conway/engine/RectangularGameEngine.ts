@@ -14,8 +14,8 @@ export class RectangularGameEngine extends GameEngine {
     protected reproductionMin: number = 3;
     protected reproductionMax: number = 3;
 
-    public constructor(type: GameType, canvas: HTMLCanvasElement, cellSize: number) {
-        super(type, canvas, cellSize);
+    public constructor(canvas: HTMLCanvasElement, cellSize: number) {
+        super(GameType.RECTANGULAR, canvas, cellSize);
     }
 
     protected getNumNeighbors(grid: Grid, row: number, col: number): number {

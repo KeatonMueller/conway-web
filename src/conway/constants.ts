@@ -1,5 +1,6 @@
 export enum GameType {
     RECTANGULAR,
+    HEXAGONAL,
 }
 
 // represent game state as a 2d array of booleans

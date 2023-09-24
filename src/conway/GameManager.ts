@@ -1,5 +1,6 @@
 import { GameType } from './constants.js';
 import { GameEngine } from './engine/GameEngine.js';
+import { HexagonalGameEngine } from './engine/HexagonalGameEngine.js';
 import { RectangularGameEngine } from './engine/RectangularGameEngine.js';
 
 /**
@@ -28,9 +29,13 @@ export class GameManager {
         this.gameEngine?.destroy();
 
         switch (nextGameType) {
+            case GameType.HEXAGONAL:
+                this.gameEngine = new HexagonalGameEngine(this.canvas, this.cellSize);
+                break;
             case GameType.RECTANGULAR:
             default:
-                this.gameEngine = new RectangularGameEngine(nextGameType, this.canvas, this.cellSize);
+                this.gameEngine = new RectangularGameEngine(this.canvas, this.cellSize);
+                break;
         }
 
         return this.gameEngine!;

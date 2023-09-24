@@ -1,4 +1,5 @@
 import { GameManager } from './conway/GameManager.js';
+import { GameType } from './conway/constants.js';
 import { GameEngine } from './conway/engine/GameEngine.js';
 
 const CELL_SIZE = 100;
@@ -10,8 +11,12 @@ let gameEngine: GameEngine;
 window.onload = () => {
     canvas = document.getElementById('canvas') as HTMLCanvasElement;
     gameManager = new GameManager(canvas, CELL_SIZE);
-    gameEngine = gameManager.getGameEngine();
+    gameEngine = gameManager.getGameEngine(GameType.RECTANGULAR);
     initGame();
+    setTimeout(() => {
+        gameEngine = gameManager.getGameEngine(GameType.HEXAGONAL);
+        initGame();
+    }, 5000);
 };
 
 // I'll switch to animation frames eventually I promise
