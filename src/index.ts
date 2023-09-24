@@ -1,27 +1,17 @@
-import { GameEngine } from './conway/GameEngine.js';
+import { GameManager } from './conway/GameManager.js';
+import { GameEngine } from './conway/engine/GameEngine.js';
 
 const PIXEL_SIZE = 100;
 
 let canvas: HTMLCanvasElement;
-let game: GameEngine;
+let gameManager: GameManager;
+let gameEngine: GameEngine;
 
 window.onload = () => {
     canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    game = new GameEngine(canvas, PIXEL_SIZE);
+    gameManager = new GameManager(canvas, PIXEL_SIZE);
+    gameEngine = gameManager.getGameEngine();
     initGame();
-
-    const canvasLeft = canvas.offsetLeft + canvas.clientLeft;
-    const canvasTop = canvas.offsetTop + canvas.clientTop;
-
-    canvas.addEventListener('pointerdown', (event) => {
-        const x = event.x - canvasLeft;
-        const y = event.y - canvasTop;
-
-        const row = Math.floor(y / PIXEL_SIZE);
-        const col = Math.floor(x / PIXEL_SIZE);
-
-        game.toggle(row, col);
-    });
 };
 
 // I'll switch to animation frames eventually I promise
@@ -33,13 +23,13 @@ const initGame = () => {
     }
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    game.resetGame();
+    gameEngine.resetGame();
 
-    game.toggle(0, 1);
-    game.toggle(1, 1);
-    game.toggle(2, 1);
+    gameEngine.toggle(0, 1);
+    gameEngine.toggle(1, 1);
+    gameEngine.toggle(2, 1);
 
-    interval = setInterval(() => game.iteration(), 200);
+    interval = setInterval(() => gameEngine.iteration(), 200);
 };
 
 window.addEventListener('resize', initGame);
@@ -51,7 +41,7 @@ document.addEventListener('keydown', (event) => {
                 clearInterval(interval);
                 interval = null;
             } else {
-                interval = setInterval(() => game.iteration(), 200);
+                interval = setInterval(() => gameEngine.iteration(), 200);
             }
             break;
         default:
