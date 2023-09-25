@@ -17,14 +17,6 @@ export abstract class GameEngine {
      */
     private gridIdx!: number;
     /**
-     * Width of game grid.
-     */
-    private gridWidth!: number;
-    /**
-     * Height of game grid.
-     */
-    private gridHeight!: number;
-    /**
      * HTML Canvas element that the game state will be painted on.
      */
     private canvas: HTMLCanvasElement;
@@ -40,6 +32,14 @@ export abstract class GameEngine {
      * Size (in pixels) of a single cell in the grid.
      */
     protected cellSize: number;
+    /**
+     * Width of game grid.
+     */
+    protected gridWidth!: number;
+    /**
+     * Height of game grid.
+     */
+    protected gridHeight!: number;
     /**
      * Type of game currently running.
      */
@@ -102,7 +102,7 @@ export abstract class GameEngine {
             const x = event.x - canvasLeft;
             const y = event.y - canvasTop;
 
-            const [row, col] = this.getCoordinate(x, y);
+            const { row, col } = this.getCoordinate(x, y);
 
             this.toggle(row, col);
         };

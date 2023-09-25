@@ -2,11 +2,11 @@ import { GameEngine } from './GameEngine.js';
 import { Coordinate, GameType, Grid } from '../constants.js';
 
 export class RectangularGameEngine extends GameEngine {
-    // prettier-ignore
-    private neighborCoords: number[][] = [
-        [-1, -1], [-1, 0], [-1, 1],
-        [ 0, -1],          [ 0, 1],
-        [ 1, -1], [ 1, 0], [ 1, 1]
+    //prettier-ignore
+    private neighborCoords: Coordinate[] = [
+        { row: -1, col: -1 }, { row: -1, col: 0 }, { row: -1, col: 1 },
+        { row:  0, col: -1 },                      { row:  0, col: 1 },
+        { row:  1, col: -1 }, { row:  1, col: 0 }, { row:  1, col: 1 },
     ];
     // default to standard Conway rules
     protected neighborMin: number = 2;
@@ -21,8 +21,8 @@ export class RectangularGameEngine extends GameEngine {
     protected getNumNeighbors(grid: Grid, row: number, col: number): number {
         let numNeighbors = 0;
         for (const neighborCoord of this.neighborCoords) {
-            const nextRow = row + neighborCoord[0];
-            const nextCol = col + neighborCoord[1];
+            const nextRow = row + neighborCoord.row;
+            const nextCol = col + neighborCoord.col;
             // taking advantage of the fact that indexing out of bounds in JS just returns undefined
             if (grid[nextRow] && grid[nextRow][nextCol]) {
                 numNeighbors++;
@@ -40,6 +40,6 @@ export class RectangularGameEngine extends GameEngine {
         const row = Math.floor(y / this.cellSize);
         const col = Math.floor(x / this.cellSize);
 
-        return [row, col];
+        return { row, col };
     }
 }

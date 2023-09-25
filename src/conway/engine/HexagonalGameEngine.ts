@@ -29,16 +29,16 @@ import { Coordinate, GameType, Grid } from '../constants.js';
  */
 export class HexagonalGameEngine extends GameEngine {
     // prettier-ignore
-    private evenRowNeighborCoords: number[][] = [
-            [-1, -1], [-1,  0],
-        [ 0, -1],          [ 0,  1],
-            [ 1, -1], [ 1,  0]
+    private evenRowNeighborCoords: Coordinate[] = [
+            { row: -1, col: -1 }, { row: -1, col: 0 },
+        { row: 0, col: -1 },            { row: 0, col: 1 },
+            { row: 1, col: -1 }, { row: 1, col: 0 },
     ];
     // prettier-ignore
-    private oddRowNeighborCoords: number[][] = [
-            [-1,  0], [-1,  1],
-        [ 0, -1],          [ 0,  1],
-            [ 1,  0], [ 1,  1]
+    private oddRowNeighborCoords: Coordinate[] = [
+            { row: -1, col: 0 }, { row: -1, col: 1 },
+        { row: 0, col: -1 },            { row: 0, col: 1 },
+            { row: 1, col: 0 }, { row: 1, col: 1 },
     ];
     private sideLength: number;
     private innerHeight: number;
@@ -57,10 +57,10 @@ export class HexagonalGameEngine extends GameEngine {
 
     protected getNumNeighbors(grid: Grid, row: number, col: number): number {
         let numNeighbors = 0;
-        const neighborCoords = row % 2 == 0 ? this.evenRowNeighborCoords : this.oddRowNeighborCoords;
+        const neighborCoords = row % 2 === 0 ? this.evenRowNeighborCoords : this.oddRowNeighborCoords;
         for (const neighborCoord of neighborCoords) {
-            const nextRow = row + neighborCoord[0];
-            const nextCol = col + neighborCoord[1];
+            const nextRow = row + neighborCoord.row;
+            const nextCol = col + neighborCoord.col;
             // taking advantage of the fact that indexing out of bounds in JS just returns undefined
             if (grid[nextRow] && grid[nextRow][nextCol]) {
                 numNeighbors++;
@@ -85,10 +85,40 @@ export class HexagonalGameEngine extends GameEngine {
         this.ctx.fill();
     }
 
+    private getDistance(x1: number, y1: number, x2: number, y2: number): number {
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
+
     protected getCoordinate(x: number, y: number): Coordinate {
         const row = Math.floor(y / (this.innerHeight + this.sideLength));
         const col = Math.floor((x - ((row % 2) * this.cellSize) / 2) / this.cellSize);
 
-        return [row, col];
+        // there's a chance the calculated row & col aren't correct because of the diagonals
+        // on hexagons; calculate distance to center of adjacent cells to be sure
+        const neighborCoords = row % 2 === 0 ? this.evenRowNeighborCoords : this.oddRowNeighborCoords;
+
+        let shortestDistance: number = Infinity;
+        let closestNeighbor: Coordinate = { row, col };
+        for (const neighborCoord of [...neighborCoords, { row: 0, col: 0 }]) {
+            const neighborRow = row + neighborCoord.row;
+            const neighborCol = col + neighborCoord.col;
+
+            if (neighborRow < 0 || neighborRow > this.gridHeight || neighborCol < 0 || neighborCol > this.gridWidth) {
+                continue;
+            }
+
+            const neighborX = neighborCol * this.cellSize + ((neighborRow % 2) * this.cellSize) / 2;
+            const neighborY = neighborRow * (this.innerHeight + this.sideLength);
+            const centerX = neighborX + this.cellSize / 2;
+            const centerY = neighborY + this.innerHeight + this.sideLength / 2;
+
+            const neighborDistance = this.getDistance(x, y, centerX, centerY);
+            if (neighborDistance < shortestDistance) {
+                shortestDistance = neighborDistance;
+                closestNeighbor = { row: neighborRow, col: neighborCol };
+            }
+        }
+
+        return closestNeighbor;
     }
 }
