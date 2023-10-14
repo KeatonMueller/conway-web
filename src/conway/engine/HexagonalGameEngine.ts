@@ -40,8 +40,11 @@ export class HexagonalGameEngine extends GameEngine {
         { row: 0, col: -1 },            { row: 0, col: 1 },
             { row: 1, col: 0 }, { row: 1, col: 1 },
     ];
-    private sideLength: number;
-    private innerHeight: number;
+    private sideLength!: number;
+    private innerHeight!: number;
+
+    protected gridWidth!: number;
+    protected gridHeight!: number;
 
     protected neighborMin: number = 1;
     protected neighborMax: number = 3;
@@ -50,9 +53,14 @@ export class HexagonalGameEngine extends GameEngine {
 
     public constructor(canvas: HTMLCanvasElement, cellSize: number) {
         super(GameType.HEXAGONAL, canvas, cellSize);
+    }
 
-        this.sideLength = Math.floor(cellSize / Math.sqrt(3));
-        this.innerHeight = Math.floor((cellSize * Math.sqrt(3)) / 6);
+    protected calculateGridDimensions(): void {
+        this.sideLength = Math.floor(this.cellSize / Math.sqrt(3));
+        this.innerHeight = Math.floor((this.cellSize * Math.sqrt(3)) / 6);
+
+        this.gridWidth = Math.floor(this.canvas.width / this.cellSize);
+        this.gridHeight = Math.floor(this.canvas.height / (this.sideLength + this.innerHeight)) - 1;
     }
 
     protected getNumNeighbors(grid: Grid, row: number, col: number): number {

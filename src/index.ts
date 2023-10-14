@@ -1,8 +1,10 @@
 import { GameManager } from './conway/GameManager.js';
 import { GameType } from './conway/constants.js';
 import { GameEngine } from './conway/engine/GameEngine.js';
+import { getNextGameType } from './conway/utils.js';
 
-const CELL_SIZE = 100;
+const CELL_SIZE = 10;
+const INTERVAL_SPEED = 50;
 
 let canvas: HTMLCanvasElement;
 let gameManager: GameManager;
@@ -12,32 +14,24 @@ window.onload = () => {
     canvas = document.getElementById('canvas') as HTMLCanvasElement;
     gameManager = new GameManager(canvas, CELL_SIZE);
     gameEngine = gameManager.getGameEngine(GameType.RECTANGULAR);
-    initGame();
-    setTimeout(() => {
-        gameEngine = gameManager.getGameEngine(GameType.HEXAGONAL);
-        initGame();
-    }, 5000);
+    onWindowResize();
+    gameEngine.randomize();
+    interval = setInterval(() => gameEngine.iteration(), INTERVAL_SPEED);
 };
 
 // I'll switch to animation frames eventually I promise
 let interval: number | null = null;
 
-const initGame = () => {
-    if (interval != null) {
-        clearInterval(interval);
+const onWindowResize = () => {
+    if (!canvas) {
+        return;
     }
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     gameEngine.resetGame();
-
-    gameEngine.toggle(0, 1);
-    gameEngine.toggle(1, 1);
-    gameEngine.toggle(2, 1);
-
-    interval = setInterval(() => gameEngine.iteration(), 200);
 };
 
-window.addEventListener('resize', initGame);
+window.addEventListener('resize', onWindowResize);
 
 document.addEventListener('keydown', (event) => {
     switch (event.key) {
@@ -46,11 +40,16 @@ document.addEventListener('keydown', (event) => {
                 clearInterval(interval);
                 interval = null;
             } else {
-                interval = setInterval(() => gameEngine.iteration(), 200);
+                interval = setInterval(() => gameEngine.iteration(), INTERVAL_SPEED);
             }
             break;
         case 'Enter':
             gameEngine.randomize();
+            break;
+        case '.':
+            gameEngine = gameManager.getGameEngine(getNextGameType(gameEngine.type));
+            gameEngine.randomize();
+            break;
         default:
             return;
     }

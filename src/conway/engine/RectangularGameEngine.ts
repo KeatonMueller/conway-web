@@ -8,6 +8,10 @@ export class RectangularGameEngine extends GameEngine {
         { row:  0, col: -1 },                      { row:  0, col: 1 },
         { row:  1, col: -1 }, { row:  1, col: 0 }, { row:  1, col: 1 },
     ];
+
+    protected gridWidth!: number;
+    protected gridHeight!: number;
+
     // default to standard Conway rules
     protected neighborMin: number = 2;
     protected neighborMax: number = 3;
@@ -16,6 +20,11 @@ export class RectangularGameEngine extends GameEngine {
 
     public constructor(canvas: HTMLCanvasElement, cellSize: number) {
         super(GameType.RECTANGULAR, canvas, cellSize);
+    }
+
+    protected calculateGridDimensions(): void {
+        this.gridWidth = Math.floor(this.canvas.width / this.cellSize);
+        this.gridHeight = Math.floor(this.canvas.height / this.cellSize);
     }
 
     protected getNumNeighbors(grid: Grid, row: number, col: number): number {

@@ -17,13 +17,13 @@ export abstract class GameEngine {
      */
     private gridIdx!: number;
     /**
-     * HTML Canvas element that the game state will be painted on.
-     */
-    private canvas: HTMLCanvasElement;
-    /**
      * Event listener added to canvas to handle click events.
      */
     private clickEventListener: (event: PointerEvent) => void;
+    /**
+     * HTML Canvas element that the game state will be painted on.
+     */
+    protected canvas: HTMLCanvasElement;
     /**
      * Canvas 2D rendering context used to paint the game state.
      */
@@ -32,14 +32,6 @@ export abstract class GameEngine {
      * Size (in pixels) of a single cell in the grid.
      */
     protected cellSize: number;
-    /**
-     * Width of game grid.
-     */
-    protected gridWidth!: number;
-    /**
-     * Height of game grid.
-     */
-    protected gridHeight!: number;
     /**
      * Type of game currently running.
      */
@@ -68,6 +60,14 @@ export abstract class GameEngine {
      */
     protected abstract reproductionMax: number;
     /**
+     * Width of game grid.
+     */
+    protected abstract gridWidth: number;
+    /**
+     * Height of game grid.
+     */
+    protected abstract gridHeight: number;
+    /**
      * Fetch the number of alive neighbors at the given location on the given grid.
      * @param grid Given grid
      * @param row Given row
@@ -87,6 +87,10 @@ export abstract class GameEngine {
      * @param y Given y location of click event on the canvas
      */
     protected abstract getCoordinate(x: number, y: number): Coordinate;
+    /**
+     * Calculate grid dimensions based on cell and canvas size.
+     */
+    protected abstract calculateGridDimensions(): void;
 
     public constructor(type: GameType, canvas: HTMLCanvasElement, cellSize: number) {
         this.type = type;
@@ -115,14 +119,30 @@ export abstract class GameEngine {
     }
 
     public resetGame() {
-        this.gridWidth = Math.floor(this.canvas.width / this.cellSize);
-        this.gridHeight = Math.floor(this.canvas.height / this.cellSize);
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.gridIdx = 0;
-        this.grids = [
+        this.calculateGridDimensions();
+
+        const newGrids: Grid[] = [
             new Array(this.gridHeight).fill(0).map(() => new Array(this.gridWidth).fill(false)),
             new Array(this.gridHeight).fill(0).map(() => new Array(this.gridWidth).fill(false)),
         ];
+
+        // copy what's possible from the old grid
+        if (this.grids) {
+            for (let row = 0; row < this.gridHeight; row++) {
+                for (let col = 0; col < this.gridWidth; col++) {
+                    if (this.grids[this.gridIdx][row] && this.grids[this.gridIdx][row][col]) {
+                        newGrids[0][row][col] = true;
+                        this.paintCell(row, col, true);
+                    }
+                }
+            }
+        }
+
+        this.gridIdx = 0;
+        this.grids = newGrids;
     }
 
     public randomize() {
