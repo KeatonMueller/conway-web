@@ -43,10 +43,10 @@ export class HexagonalGameEngine extends GameEngine {
     private sideLength: number;
     private innerHeight: number;
 
-    protected neighborMin: number = 2;
+    protected neighborMin: number = 1;
     protected neighborMax: number = 3;
     protected reproductionMin: number = 3;
-    protected reproductionMax: number = 3;
+    protected reproductionMax: number = 4;
 
     public constructor(canvas: HTMLCanvasElement, cellSize: number) {
         super(GameType.HEXAGONAL, canvas, cellSize);
@@ -75,13 +75,15 @@ export class HexagonalGameEngine extends GameEngine {
         const y = row * (this.innerHeight + this.sideLength);
 
         this.ctx.fillStyle = value ? 'white' : 'black';
+        const offset = value ? 1 : 0; // draw white hexagons 1 pixel smaller to account for anti-aliasing
+
         this.ctx.beginPath();
-        this.ctx.moveTo(x + this.cellSize / 2, y);
-        this.ctx.lineTo(x + this.cellSize, y + this.innerHeight);
-        this.ctx.lineTo(x + this.cellSize, y + this.innerHeight + this.sideLength);
-        this.ctx.lineTo(x + this.cellSize / 2, y + 2 * this.innerHeight + this.sideLength);
-        this.ctx.lineTo(x, y + this.innerHeight + this.sideLength);
-        this.ctx.lineTo(x, y + this.innerHeight);
+        this.ctx.moveTo(x + this.cellSize / 2, y + offset);
+        this.ctx.lineTo(x + this.cellSize - offset, y + this.innerHeight + offset);
+        this.ctx.lineTo(x + this.cellSize - offset, y + this.innerHeight + this.sideLength - offset);
+        this.ctx.lineTo(x + this.cellSize / 2, y + 2 * this.innerHeight + this.sideLength - offset);
+        this.ctx.lineTo(x + offset, y + this.innerHeight + this.sideLength - offset);
+        this.ctx.lineTo(x + offset, y + this.innerHeight + offset);
         this.ctx.fill();
     }
 

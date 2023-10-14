@@ -125,6 +125,16 @@ export abstract class GameEngine {
         ];
     }
 
+    public randomize() {
+        for (let row = 0; row < this.gridHeight; row++) {
+            for (let col = 0; col < this.gridWidth; col++) {
+                if (Math.random() < 0.5) {
+                    this.toggle(row, col);
+                }
+            }
+        }
+    }
+
     public toggle(row: number, col: number) {
         if (row < 0 || row > this.gridHeight || col < 0 || col > this.gridWidth) {
             return;

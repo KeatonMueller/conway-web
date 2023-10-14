@@ -49,6 +49,8 @@ document.addEventListener('keydown', (event) => {
                 interval = setInterval(() => gameEngine.iteration(), 200);
             }
             break;
+        case 'Enter':
+            gameEngine.randomize();
         default:
             return;
     }
